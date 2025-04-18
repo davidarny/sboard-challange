@@ -5,7 +5,7 @@ export interface ImageInfo {
   originalName: string;
   path: string;
   status: string;
-  uploadDate: string;
+  uploadedAt: string;
 }
 
 export function getLatestImage() {

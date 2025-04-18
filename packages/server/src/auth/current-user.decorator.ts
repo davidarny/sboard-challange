@@ -1,5 +1,6 @@
-import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import { Metadata } from "@grpc/grpc-js";
+import type { ExecutionContext } from "@nestjs/common";
+import { createParamDecorator } from "@nestjs/common";
+import type { Metadata } from "@grpc/grpc-js";
 import type { RequestWithUser } from "./grpc-auth.guard";
 
 export const CurrentUser = createParamDecorator((_: unknown, context: ExecutionContext) => {

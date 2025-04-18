@@ -19,7 +19,7 @@ export class ImageController {
   }
 
   @GrpcMethod("ImageService", "GetLastImage")
-  getLastImage(@CurrentUser() user: RequestWithUser["user"]): Promise<ImageInfoResponse> {
+  getLastImage(@CurrentUser() user: RequestWithUser["user"]): Promise<ImageInfoResponse | null> {
     return this.imageService.getLastImage(user.sub);
   }
 }

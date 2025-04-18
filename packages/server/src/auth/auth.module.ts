@@ -12,7 +12,7 @@ import { GrpcAuthGuard } from "./grpc-auth.guard";
     JwtModule.register({
       global: true,
       secret: JWT.secret,
-      signOptions: { expiresIn: "60s" },
+      signOptions: { expiresIn: "1h" },
     }),
   ],
   providers: [AuthService, GrpcAuthGuard],

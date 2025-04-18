@@ -1,9 +1,11 @@
 import { Loader2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { ImageInfo, getLatestImage } from "@/api/images";
+import type { ImageInfo } from "@/api/images";
+import { getLatestImage } from "@/api/images";
 import { useQuery } from "@tanstack/react-query";
 import { QUERIES } from "@/lib/query";
+import { Badge } from "./ui/badge";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -62,17 +64,15 @@ export function ImagePreview() {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="truncate">{image.originalName}</span>
-          <span className={cn("text-sm font-normal", getStatusColor(image.status))}>{image.status}</span>
+          <Badge variant="outline" className={cn("text-sm font-normal", getStatusColor(image.status))}>
+            {image.status.toUpperCase()}
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        {image.status === "processed" ? (
+        {image.status === "processed" || image.status === "uploaded" ? (
           <div className="aspect-video relative bg-muted">
-            <img
-              src={`api/images/${image.id}/optimized`}
-              alt={image.originalName}
-              className="w-full h-full object-contain"
-            />
+            <img src={image.path} alt={image.originalName} className="w-full h-full object-contain" />
           </div>
         ) : (
           <div className="aspect-video flex items-center justify-center bg-muted/50">
@@ -84,7 +84,7 @@ export function ImagePreview() {
         )}
       </CardContent>
       <CardFooter className="text-sm text-muted-foreground">
-        Uploaded {new Date(image.uploadDate).toLocaleString()}
+        Uploaded {new Date(image.uploadedAt).toLocaleString()}
       </CardFooter>
     </Card>
   );

@@ -2,7 +2,9 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { env } from "./env";
 import { Logger } from "@nestjs/common";
-import { Transport, MicroserviceOptions } from "@nestjs/microservices";
+import type { MicroserviceOptions } from "@nestjs/microservices";
+import { Transport } from "@nestjs/microservices";
+import { join } from "node:path";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,7 +13,7 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       package: "image",
-      protoPath: "src/image/image.proto",
+      protoPath: join(__dirname, "image/image.proto"),
       url: `0.0.0.0:${env.PORT}`,
     },
   });

@@ -3,12 +3,13 @@ import { RpcException } from "@nestjs/microservices";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Image } from "./image.entity";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "../env";
 import { Observable, lastValueFrom } from "rxjs";
 import { toArray } from "rxjs/operators";
 import sharp from "sharp";
 import { User } from "../users/user.entity";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export interface UploadImageRequest {
   metadata?: { filename: string };
@@ -81,24 +82,27 @@ export class ImageService {
     });
 
     const saved = await this.imageRepository.save(image);
-
     return { id: saved.id };
   }
 
-  async getLastImage(userId: number): Promise<ImageInfoResponse> {
+  async getLastImage(userId: number): Promise<ImageInfoResponse | null> {
     const image = await this.imageRepository.findOne({
       where: { user: { id: userId } },
       order: { uploadedAt: "DESC" },
     });
 
     if (!image) {
-      throw new RpcException("No images found for user");
+      return null;
     }
+
+    const signedUrl = await getSignedUrl(this.s3, new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: image.path }), {
+      expiresIn: 60 * 60, // 1 hour
+    });
 
     return {
       id: image.id,
       originalName: image.originalName,
-      path: image.path,
+      path: signedUrl,
       status: image.status,
       width: image.width,
       height: image.height,

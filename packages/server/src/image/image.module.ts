@@ -7,7 +7,8 @@ import { AuthModule } from "../auth/auth.module";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Image]), AuthModule],
-  providers: [ImageService],
+  providers: [ImageService, ImageController],
   controllers: [ImageController],
+  exports: [ImageController],
 })
 export class ImageModule {}
