@@ -7,7 +7,7 @@ export function RootLayout() {
   const isNavigating = Boolean(navigation.location);
 
   return (
-    <div className="flex min-h-screen w-screen flex-col">
+    <div className="h-screen">
       {isNavigating && <GlobalSpinner />}
       <Outlet />
       <Toaster />

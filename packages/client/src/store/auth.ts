@@ -25,5 +25,7 @@ export const useAuth = () => {
   const token = useAuthStore((state) => state.token);
   const setToken = useAuthStore((state) => state.setToken);
 
-  return { token, setToken };
+  const logout = useAuthStore((state) => state.logout);
+
+  return { token, setToken, logout };
 };

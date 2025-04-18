@@ -87,7 +87,7 @@ export const Upload = forwardRef<UploadHandle, UploadProps>(({ isUploading = fal
 
   return (
     <Form {...form}>
-      <form>
+      <form className="bg-background">
         <FormField
           control={form.control}
           name="file"
