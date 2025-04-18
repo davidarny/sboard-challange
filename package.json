@@ -17,5 +17,10 @@
     "@types/bun": "^1.2.10",
     "turbo": "^2.5.0"
   },
-  "packageManager": "bun@1.2.10"
+  "packageManager": "bun@1.2.10",
+  "trustedDependencies": [
+    "@nestjs/core",
+    "@swc/core",
+    "protobufjs"
+  ]
 }

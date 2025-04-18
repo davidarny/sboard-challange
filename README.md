@@ -21,11 +21,11 @@ Define the following environment variables in a `.env` or `.env.local` file at t
 
 ### Frontend (client)
 
-| Variable        | Description                       | Example               |
-| --------------- | --------------------------------- | --------------------- |
-| PORT            | Port for frontend server          | 3010                  |
-| API_URL         | URL of the backend API            | http://localhost:3020 |
-| SKIP_VALIDATION | Skip environment validation (opt) | "true" or "false"     |
+| Variable        | Description                            | Example               |
+| --------------- | -------------------------------------- | --------------------- |
+| PORT            | Port for frontend server (vite server) | 3010                  |
+| API_URL         | URL of the backend API (vite server)   | http://localhost:3020 |
+| SKIP_VALIDATION | Skip environment validation (opt)      | "true" or "false"     |
 
 ### Backend (server)
 
