@@ -1,20 +1,20 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from "react-router";
-
-const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-});
-
-type LoginData = z.infer<typeof loginSchema>;
+import { login, LoginData, loginSchema } from "@/api/auth";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import { useAuth } from "@/store/auth";
+import { Loader2 } from "lucide-react";
 
 export function LoginPage() {
+  const navigate = useNavigate();
+  const { setToken } = useAuth();
+
   const form = useForm<LoginData>({
     mode: "onBlur",
     resolver: zodResolver(loginSchema),
@@ -24,9 +24,28 @@ export function LoginPage() {
     },
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: login,
+
+    onSuccess: (data) => {
+      setToken(data.access_token);
+      void navigate("/");
+    },
+
+    onError: (error) => {
+      if (error.message.toLowerCase().includes("email")) {
+        form.setError("email", { message: error.message });
+      } else if (error.message.toLowerCase().includes("password")) {
+        form.setError("password", { message: error.message });
+      } else {
+        form.setError("root", { message: error.message || "Failed to login" });
+      }
+    },
+  });
+
   function onSubmit(data: LoginData) {
-    // TODO: implement login API call
-    console.log(data);
+    form.clearErrors();
+    mutate(data);
   }
 
   return (
@@ -65,8 +84,9 @@ export function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Sign In
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Signing in..." : "Sign In"}
+                {isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
               </Button>
             </form>
           </Form>
