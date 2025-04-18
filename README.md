@@ -23,15 +23,15 @@ Define the following environment variables in a `.env` or `.env.local` file at t
 
 | Variable        | Description                            | Example               |
 | --------------- | -------------------------------------- | --------------------- |
-| PORT            | Port for frontend server (vite server) | 3010                  |
-| API_URL         | URL of the backend API (vite server)   | http://localhost:3020 |
+| PORT            | Port for frontend server (vite server) | 3000                  |
+| API_URL         | URL of the backend API (vite server)   | http://localhost:3001 |
 | SKIP_VALIDATION | Skip environment validation (opt)      | "true" or "false"     |
 
 ### Backend (server)
 
 | Variable        | Description                       | Example               |
 | --------------- | --------------------------------- | --------------------- |
-| PORT            | Port for backend server           | 3020                  |
+| PORT            | Port for backend server           | 3001                  |
 | S3_ENDPOINT     | S3 endpoint URL                   | http://localhost:9000 |
 | S3_BUCKET       | Name of the S3 bucket             | bucket                |
 | S3_ACCESS_KEY   | AWS access key for S3             | access-key            |
@@ -92,4 +92,27 @@ To preview the built frontend:
 ```bash
 cd packages/client
 bun run preview
+```
+
+## Running with Docker Compose
+
+You can run all services and the application using Docker Compose with the provided `docker-compose.yml`:
+
+```bash
+docker-compose up --build
+```
+
+This will start:
+
+- **PostgreSQL** database
+- **Redis** cache
+- **MinIO** object storage
+- **Server** (backend)
+- **Frontend**
+
+Ensure you have a `.env.local` file at the root of the project with the following variables:
+
+```bash
+S3_ACCESS_KEY=<your-s3-access-key>
+S3_SECRET_KEY=<your-s3-secret-key>
 ```
