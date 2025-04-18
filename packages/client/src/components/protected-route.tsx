@@ -1,10 +1,10 @@
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/store/auth";
 import { Navigate, Outlet } from "react-router";
 
 export function ProtectedRoute() {
-  const { user } = useAuth();
+  const { token } = useAuth();
 
-  if (!user) {
+  if (!token) {
     return <Navigate to="/auth/login" />;
   }
 

@@ -1,18 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["SKIP_VALIDATION"],
+  "globalDependencies": [".env"],
   "tasks": {
     "dev": {
       "cache": false,
       "persistent": true,
-      "env": ["SERVER_PORT", "CLIENT_PORT"]
+      "inputs": ["$TURBO_DEFAULT$", ".env.development.local", ".env.local", ".env.development", ".env"]
     },
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": ["$TURBO_DEFAULT$", ".env.production.local", ".env.local", ".env.production", ".env"],
       "outputs": ["dist/**"]
     },
     "lint": {},
-    "test": {},
-    "test:e2e": {}
+    "test": {}
   }
 }

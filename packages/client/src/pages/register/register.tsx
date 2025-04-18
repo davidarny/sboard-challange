@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -20,25 +19,17 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Link } from "react-router";
-
-const registerSchema = z
-  .object({
-    email: z.string().email({ message: "Invalid email address" }),
-    password: z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
-    confirmPassword: z
-      .string()
-      .min(6, { message: "Please confirm your password" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
-
-export type RegisterData = z.infer<typeof registerSchema>;
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import { useAuth } from "@/store/auth";
+import { register, RegisterData, registerSchema } from "@/api/auth";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export function RegisterPage() {
+  const navigate = useNavigate();
+  const { setToken } = useAuth();
+
   const form = useForm<RegisterData>({
     mode: "onBlur",
     resolver: zodResolver(registerSchema),
@@ -49,9 +40,19 @@ export function RegisterPage() {
     },
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (formData: RegisterData) => register(formData),
+    onSuccess: (data) => {
+      setToken(data.access_token);
+      void navigate("/");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   function onSubmit(data: RegisterData) {
-    // TODO: implement registration API call
-    console.log(data);
+    mutate(data);
   }
 
   return (
@@ -111,8 +112,9 @@ export function RegisterPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Sign Up
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Signing up..." : "Sign Up"}
+                {isPending && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
               </Button>
             </form>
           </Form>

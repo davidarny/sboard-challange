@@ -3,11 +3,13 @@ import eslint from "@eslint/js";
 import prettier from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import turbo from "eslint-config-turbo/flat";
 
 export default tseslint.config(
   {
     ignores: ["eslint.config.mjs"],
   },
+  ...turbo,
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   prettier,

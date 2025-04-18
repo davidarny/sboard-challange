@@ -5,11 +5,13 @@ import tseslint from "typescript-eslint";
 import hooks from "eslint-plugin-react-hooks";
 import refresh from "eslint-plugin-react-refresh";
 import globals from "globals";
+import turbo from "eslint-config-turbo/flat";
 
 export default tseslint.config(
   {
     ignores: ["eslint.config.mjs"],
   },
+  ...turbo,
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   prettier,
@@ -27,6 +29,9 @@ export default tseslint.config(
         ...globals.browser,
         ...globals.node,
       },
+    },
+    rules: {
+      "@typescript-eslint/no-misused-promises": "off",
     },
   },
 );
