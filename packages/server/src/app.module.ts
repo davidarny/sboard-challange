@@ -4,16 +4,16 @@ import { UsersModule } from "./users/users.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ImageModule } from "./image/image.module";
 import { GatewayModule } from "./gateway/gateway.module";
-
+import { env } from "./env";
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: "postgres",
-      host: "localhost",
-      port: 5432,
-      username: "postgres",
-      password: "postgres",
-      database: "postgres",
+      host: env.DB_HOST,
+      port: env.DB_PORT,
+      username: env.DB_USER,
+      password: env.DB_PASSWORD,
+      database: env.DB_NAME,
       entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: true,
     }),

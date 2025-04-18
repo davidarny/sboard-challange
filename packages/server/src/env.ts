@@ -1,10 +1,10 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
-import { expand } from "dotenv-expand";
-import { config } from "dotenv";
+import dotenvx from "@dotenvx/dotenvx";
 
-expand(config());
+dotenvx.config();
+dotenvx.config({ path: ".env.local", override: true });
 
 export const env = createEnv({
   clientPrefix: "NEST_",
@@ -20,6 +20,21 @@ export const env = createEnv({
     S3_BUCKET: z.string(),
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),
+
+    DB_HOST: z.string(),
+    DB_PORT: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number()),
+    DB_USER: z.string(),
+    DB_PASSWORD: z.string(),
+    DB_NAME: z.string(),
+
+    REDIS_HOST: z.string(),
+    REDIS_PORT: z
+      .string()
+      .transform((val) => parseInt(val, 10))
+      .pipe(z.number()),
   },
 
   runtimeEnv: process.env,

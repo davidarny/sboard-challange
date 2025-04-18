@@ -1,14 +1,4 @@
-import {
-  Controller,
-  UseGuards,
-  Post,
-  UseInterceptors,
-  UploadedFile,
-  Get,
-  Param,
-  HttpException,
-  HttpStatus,
-} from "@nestjs/common";
+import { Controller, UseGuards, Post, UseInterceptors, UploadedFile, Get } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { AuthGuard } from "../auth/auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
@@ -40,12 +30,5 @@ export class GatewayController {
   @Get("latest")
   async getLatestImage(@CurrentUser() user: RequestWithUser["user"]) {
     return this.imageController.getLastImage(user);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get(":id/optimized")
-  getOptimized(@Param("id") id: string) {
-    // TODO: implement optimized image streaming when processing is ready
-    throw new HttpException(`Not implemented (image id: ${id})`, HttpStatus.NOT_IMPLEMENTED);
   }
 }

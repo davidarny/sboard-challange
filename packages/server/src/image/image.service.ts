@@ -10,6 +10,7 @@ import { toArray } from "rxjs/operators";
 import sharp from "sharp";
 import { User } from "../users/user.entity";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { ImageProcessor } from "./image.processor";
 
 export interface UploadImageRequest {
   metadata?: { filename: string };
@@ -37,15 +38,16 @@ export class ImageService {
   constructor(
     @InjectRepository(Image)
     private imageRepository: Repository<Image>,
+    private readonly imageProcessor: ImageProcessor,
   ) {
     this.s3 = new S3Client({
-      endpoint: env.S3_ENDPOINT,
       region: "us-east-1",
+      forcePathStyle: true,
+      endpoint: env.S3_ENDPOINT,
       credentials: {
         accessKeyId: env.S3_ACCESS_KEY,
         secretAccessKey: env.S3_SECRET_KEY,
       },
-      forcePathStyle: true,
     });
   }
 
@@ -82,6 +84,7 @@ export class ImageService {
     });
 
     const saved = await this.imageRepository.save(image);
+    await this.imageProcessor.addJob(saved.id);
     return { id: saved.id };
   }
 

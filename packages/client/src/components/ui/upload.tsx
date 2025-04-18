@@ -1,4 +1,5 @@
-import { ChangeEvent, DragEvent, useRef, useState, forwardRef, useImperativeHandle } from "react";
+import type { ChangeEvent, DragEvent } from "react";
+import { useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { Upload as UploadIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
