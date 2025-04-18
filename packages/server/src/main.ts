@@ -2,10 +2,23 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { env } from "./env";
 import { Logger } from "@nestjs/common";
+import { Transport, MicroserviceOptions } from "@nestjs/microservices";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  Logger.debug(`Server is running on port ${env.PORT}`);
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: "image",
+      protoPath: "src/image/image.proto",
+      url: `0.0.0.0:${env.PORT}`,
+    },
+  });
+
+  await app.startAllMicroservices();
+  Logger.log(`gRPC microservice is running on port ${env.PORT}`, "NestApplication");
+
   await app.listen(env.PORT);
 }
 

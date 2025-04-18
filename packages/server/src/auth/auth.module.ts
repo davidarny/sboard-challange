@@ -3,19 +3,20 @@ import { AuthService } from "./auth.service";
 import { UsersModule } from "../users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { AuthController } from "./auth.controller";
-import { jwtConstants } from "./constants";
+import { JWT } from "./auth.constants";
+import { GrpcAuthGuard } from "./grpc-auth.guard";
 
 @Module({
   imports: [
     UsersModule,
     JwtModule.register({
       global: true,
-      secret: jwtConstants.secret,
+      secret: JWT.secret,
       signOptions: { expiresIn: "60s" },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, GrpcAuthGuard],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, GrpcAuthGuard],
 })
 export class AuthModule {}

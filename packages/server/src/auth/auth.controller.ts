@@ -1,23 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Request,
-  UseGuards,
-} from "@nestjs/common";
-import { AuthGuard } from "./auth.guard";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from "@nestjs/common";
+import { AuthGuard, RequestWithUser } from "./auth.guard";
 import { AuthService } from "./auth.service";
-import { Request as ExpressRequest } from "express";
-
-interface RequestWithUser extends ExpressRequest {
-  user: {
-    sub: number;
-    email: string;
-  };
-}
 
 class LoginBody {
   email: string;

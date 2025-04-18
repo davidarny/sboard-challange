@@ -1,0 +1,33 @@
+syntax = "proto3";
+package image;
+
+service ImageService {
+  rpc UploadImage(stream UploadImageRequest) returns (UploadImageResponse);
+  rpc GetLastImage(GetLastImageRequest) returns (ImageInfoResponse);
+}
+
+message UploadImageRequest {
+  UploadImageMetadata metadata = 1;
+  bytes chunk = 2;
+}
+
+message UploadImageMetadata {
+  string filename = 1;
+}
+
+message UploadImageResponse {
+  int32 id = 1;
+  string message = 2;
+}
+
+message GetLastImageRequest {}
+
+message ImageInfoResponse {
+  int32 id = 1;
+  string originalName = 2;
+  string path = 3;
+  string status = 4;
+  int32 width = 5;
+  int32 height = 6;
+  string uploadedAt = 7;
+} 

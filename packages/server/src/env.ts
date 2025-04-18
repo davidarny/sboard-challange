@@ -15,6 +15,11 @@ export const env = createEnv({
       .string()
       .transform((val) => parseInt(val, 10))
       .pipe(z.number()),
+
+    S3_ENDPOINT: z.string(),
+    S3_BUCKET: z.string(),
+    S3_ACCESS_KEY: z.string(),
+    S3_SECRET_KEY: z.string(),
   },
 
   runtimeEnv: process.env,
