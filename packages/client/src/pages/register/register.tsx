@@ -1,29 +1,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/store/auth";
 import { register, RegisterData, registerSchema } from "@/api/auth";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 export function RegisterPage() {
@@ -41,17 +26,26 @@ export function RegisterPage() {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (formData: RegisterData) => register(formData),
+    mutationFn: register,
+
     onSuccess: (data) => {
       setToken(data.access_token);
       void navigate("/");
     },
+
     onError: (error) => {
-      toast.error(error.message);
+      if (error.message.toLowerCase().includes("email")) {
+        form.setError("email", { message: error.message });
+      } else if (error.message.toLowerCase().includes("password")) {
+        form.setError("password", { message: error.message });
+      } else {
+        form.setError("root", { message: error.message || "Failed to register" });
+      }
     },
   });
 
   function onSubmit(data: RegisterData) {
+    form.clearErrors();
     mutate(data);
   }
 
@@ -65,6 +59,9 @@ export function RegisterPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {form.formState.errors.root && (
+                <div className="text-sm font-medium text-destructive">{form.formState.errors.root.message}</div>
+              )}
               <FormField
                 control={form.control}
                 name="email"
@@ -85,11 +82,7 @@ export function RegisterPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="********"
-                        {...field}
-                      />
+                      <Input type="password" placeholder="********" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,11 +95,7 @@ export function RegisterPage() {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="********"
-                        {...field}
-                      />
+                      <Input type="password" placeholder="********" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
